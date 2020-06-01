@@ -1,0 +1,41 @@
+version: '3'
+services:
+  mysql:
+    image: mariadb
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pass1234
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wp123456789!
+    networks:
+      - wpnet
+  php:
+    image: fpm_new
+    volumes:
+      - ./www:/var/www/html
+      - ./php_new_conf/7.3:/etc/php/7.3
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    networks:
+      - wpnet      
+    command:
+           /bin/bash -c  '/usr/sbin/php-fpm7.3 -c /etc/php/7.3/fpm/php-fpm.conf ; tail -f /dev/null'
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./www:/var/www/html
+    ports:
+      - 8080:80
+    links:
+      - php
+    networks:
+      - wpnet      
+networks: 
+  wpnet:
+

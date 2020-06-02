@@ -12,24 +12,23 @@ services:
     networks:
       - wpnet
   php:
-    image: fpm_new
+    build: .
     volumes:
-      - ./www:/var/www/html
+      -  www:/var/www/html
       - ./php_new_conf/7.3:/etc/php/7.3
+      - ./wpconf:/var/www/html
     depends_on:
       - mysql
     links:
       - mysql
     networks:
       - wpnet      
-    command:
-           /bin/bash -c  '/usr/sbin/php-fpm7.3 -c /etc/php/7.3/fpm/php-fpm.conf ; tail -f /dev/null'
-
+    command: /bin/bash -c  '/usr/sbin/php-fpm7.3 -c /etc/php/7.3/fpm/php-fpm.conf ; tail -f /dev/null' 
   nginx:
     image: nginx
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - ./www:/var/www/html
+      - www:/var/www/html
     ports:
       - 8080:80
     links:
@@ -38,4 +37,5 @@ services:
       - wpnet      
 networks: 
   wpnet:
-
+volumes:
+  www:

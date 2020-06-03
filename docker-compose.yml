@@ -16,14 +16,14 @@ services:
     volumes:
       -  www:/var/www/html
       - ./php_new_conf/7.3:/etc/php/7.3
-      - ./wpconf:/var/www/html
+      - ./wpconf/wp-config.php:/var/www/html/wp-config.php
     depends_on:
       - mysql
     links:
       - mysql
     networks:
       - wpnet      
-    command: /bin/bash -c  '/usr/sbin/php-fpm7.3 -c /etc/php/7.3/fpm/php-fpm.conf ; tail -f /dev/null' 
+    command: /bin/bash -c  '/usr/sbin/php-fpm7.3 -c /etc/php/7.3/fpm/php-fpm.conf && tail -f /dev/null' 
   nginx:
     image: nginx
     volumes:
